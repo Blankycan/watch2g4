@@ -139,9 +139,7 @@ wsServer.on('request', function(request) {
         // Send client its userdata with uuid
         connection.send(JSON.stringify({
           type: "userdata",
-          data: {
-            uuid: uuid
-          }
+          uuid: uuid
         }));
 
         // Broadcast updated userlist

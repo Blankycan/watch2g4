@@ -27,10 +27,10 @@ var app = new Vue({
 
       // Receive inital userdata for yourself
       if(data.type === "userdata") {
-        console.log("userdata:", data.data);
+        console.log("userdata:", data);
         // Update UUID if we got a new one
-        if(this.uuid != data.data.uuid) {
-          this.uuid = data.data.uuid;
+        if(this.uuid != data.uuid) {
+          this.uuid = data.uuid;
           $.post('/setUuid', {
             uuid: this.uuid
           }, (data, status) => {
@@ -50,7 +50,7 @@ var app = new Vue({
 
       // Handle video search event
       else if(data.type === "search") {
-        this.loadVideo(data.data);
+        this.loadVideo(data.url);
       }
       else if(data.type === "playQueuedVideo") {
         console.log(`set ${this.currentIndex} to active false and ${data.queueIndex} to active`)
@@ -129,7 +129,7 @@ var app = new Vue({
       // Pass this search query to the server
       let msg = {
         type: 'search',
-        data: this.videoSearch
+        url: this.videoSearch
       }
       this.socket.send(JSON.stringify(msg));
       this.videoSearch = ""

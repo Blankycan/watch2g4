@@ -3,7 +3,9 @@ var app = new Vue({
   mixins: [ webSocket, videoPlayer ],
   data: {
     username: username,
+    uuid: uuid,
     videoSearch: "https://www.youtube.com/watch?v=S-8U4lSEq8A",
+    users: []
   },
   methods: {
     /**
@@ -20,8 +22,28 @@ var app = new Vue({
         console.log("Failed to parse message.");
       }
 
+      // Receive inital userdata for yourself
+      if(data.type === "userdata") {
+        console.log("userdata:", data.data);
+        // Update UUID if we got a new one
+        if(this.uuid != data.data.uuid) {
+          this.uuid = data.data.uuid;
+          $.post('/setUuid', {
+            uuid: this.uuid
+          }, (data, status) => {
+            console.log(`${data} and status is ${status}`);
+          });
+        }
+      }
+
+      // Handle updated userlist
+      else if(data.type === "userlist") {
+        console.log("userlist:", data.users);
+        this.users = data.users;
+      }
+
       // Handle video search event
-      if(data.type === "search") {
+      else if(data.type === "search") {
         this.doSearch(data.data);
       }
 
@@ -69,6 +91,11 @@ var app = new Vue({
      * Update the username.
      */
     changeUsername: function() {
+      this.send(JSON.stringify({
+        type: "rename",
+        username: this.username,
+        uuid: this.uuid
+      }));
       $.post('/setUsername', {
         username: this.username
       }, (data, status) => {

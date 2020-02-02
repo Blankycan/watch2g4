@@ -21,11 +21,15 @@
 
       <div class="userlist">
         <input v-model="username" v-on:keyup.enter="changeUsername"></input>
+        <div v-for="user in users">
+          <h4>{{ user.username }}</h4>
+        </div>
       </div>
     </div>
 
     <script>
       var username = "<%= username %>";
+      var uuid = "<%= uuid %>";
     </script>
     <script src="/javascripts/webSocket.js"></script>
     <script src="/javascripts/videoPlayer.js"></script>

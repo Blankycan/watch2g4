@@ -8,12 +8,21 @@ router.get('/', function(req, res, next) {
   let username = req.cookies['username'];
   res.render('index', {
     title: 'Express',
-    username: (username) ? username : "Unknown"
+    username: req.cookies['username'] || "Unknown",
+    uuid: req.cookies['uuid'] || ""
   });
 });
 
 router.post('/setUsername', function(req, res) {
   res.cookie('username', req.body.username, {
+    maxAge: 60 * 60 * 24 * 9001,
+    httpOnly: true
+  });
+  res.send('Cookie has been set.');
+});
+
+router.post('/setUuid', function(req, res) {
+  res.cookie('uuid', req.body.uuid, {
     maxAge: 60 * 60 * 24 * 9001,
     httpOnly: true
   });

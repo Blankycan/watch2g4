@@ -156,7 +156,7 @@ var app = new Vue({
         originalUrl: originalUrl,
         active: false
       }
-      this.socket.send(JSON.stringify(msg));
+      app.send(JSON.stringify(msg));
       this.videoSearch = ""
     },
     /**
@@ -168,7 +168,7 @@ var app = new Vue({
         type: 'playQueuedVideo',
         queueIndex: index
       }
-      this.socket.send(JSON.stringify(msg));
+      app.send(JSON.stringify(msg));
       
     },
     /**
@@ -183,7 +183,7 @@ var app = new Vue({
         queue: this.queue,
         currentIndex: this.currentIndex
       }
-      this.socket.send(JSON.stringify(msg));
+      app.send(JSON.stringify(msg));
       
     },
     /**
@@ -196,7 +196,7 @@ var app = new Vue({
         queue: this.queue,
         currentIndex: this.currentIndex
       }
-      this.socket.send(JSON.stringify(msg));
+      app.send(JSON.stringify(msg));
 
     },
     /**
@@ -211,7 +211,7 @@ var app = new Vue({
         url: url,
         originalUrl: origVid
       }
-      this.socket.send(JSON.stringify(msg));
+      app.send(JSON.stringify(msg));
   
       url = "https://www.youtube.com/v/G2e_M06YDyY?version=3"
       origVid = "https://www.youtube.com/watch?v=G2e_M06YDyY"
@@ -221,7 +221,7 @@ var app = new Vue({
         url: url,
         originalUrl: origVid      
       }
-      this.socket.send(JSON.stringify(msg));
+      app.send(JSON.stringify(msg));
 
       url = "https://www.youtube.com/v/1bt-FHaFVH8?version=3"
       origVid = "https://www.youtube.com/watch?v=1bt-FHaFVH8"
@@ -231,7 +231,7 @@ var app = new Vue({
         url: url,
         originalUrl: origVid      
       }
-      this.socket.send(JSON.stringify(msg));
+      app.send(JSON.stringify(msg));
     },
     /**
      * Update the username.

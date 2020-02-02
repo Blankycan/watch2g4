@@ -11,12 +11,29 @@ a {
 #app {
   display: flex;
   flex-direction: column;
+  max-width: 800px;
+  margin: auto;
 }
 
 .search {
+  display: flex;
+  justify-content: center;
   padding: 20px;
+  font-size: 18px;
+}
+
+.search > input {
+  padding: 5px;
+  padding-left: 0;
+  font-size: inherit;
+  flex-grow: 1;
+}
+
+.search > button {
+  font-size: inherit;
 }
 
 #player {
   margin: 10px auto;
+  max-width: 100%;
 }

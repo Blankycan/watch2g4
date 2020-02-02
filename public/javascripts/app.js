@@ -67,7 +67,7 @@ var app = new Vue({
       this.videoSearch = search
     },
     /**
-     * No docs
+     * Sends an event to all users to load the video specified in the searchbox
      */
     searchVideo: function() {
       this.processYTUrl()
@@ -81,7 +81,7 @@ var app = new Vue({
       this.videoSearch = ""
     },
     /**
-     * No docs
+     * Sends an event to all users to add the video to their queue
      */
     queueVideo: function() {
       const originalUrl = this.videoSearch
@@ -97,7 +97,7 @@ var app = new Vue({
       this.videoSearch = ""
     },
     /**
-     * No docs
+     * Sample function to load 2 videos to the queue
      */
     fillqueue: function() {
       let url = "https://www.youtube.com/v/RMvt13PtV5I?version=3"

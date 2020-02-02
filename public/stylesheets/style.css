@@ -59,7 +59,21 @@ a {
   padding: 10px;
   padding-bottom: 10px;
   cursor: pointer;
+  position: relative;
 }
+
+#queue  i {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  font-size: 19px;
+  width: 22px;
+  display: inline-block;
+  text-align: center;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
 
 #queue  li.active{
   background-color: #363636;

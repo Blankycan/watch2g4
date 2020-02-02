@@ -44,7 +44,7 @@ var app = new Vue({
       // Handle sync queue
       else if(data.type === "syncQueue") {
         console.log("Syncing queue")
-        this.queue = data.data
+        this.queue = data.queue
         this.currentIndex = data.currentIndex
       }
 
@@ -131,6 +131,20 @@ var app = new Vue({
       let msg = {
         type: 'playQueuedVideo',
         queueIndex: index
+      }
+      this.socket.send(JSON.stringify(msg));
+      
+    },
+    /**
+     * Sends an event to all users to add the video to their queue
+     */
+    removeQueuedVideo: function(index) {
+      // Pass this search query to the server
+      this.queue.splice(index, 1)
+      let msg = {
+        type: 'syncQueue',
+        queue: this.queue,
+        currentIndex: this.currentIndex
       }
       this.socket.send(JSON.stringify(msg));
       

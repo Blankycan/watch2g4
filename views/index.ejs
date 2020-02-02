@@ -36,11 +36,11 @@
       </div>
 
       <div class="row">
-        <div class="col-lg-7 col-md-12 order-lg-last" align="center">
+        <div class="col-xl-6 col-lg-7 col-md-12 order-lg-2" align="center">
           <div id="player"></div>
         </div>
 
-        <div id="queue" class="col-lg-5 col-md-12 order-lg-first">
+        <div id="queue" class="col-xl-3 col-lg-5 col-md-12 order-lg-1">
           <h2>Queue</h2>
           <ul>
             <li v-for="(video, index) in queue" v-on:click="playQueuedVideo(index)" v-bind:class="{ active: video.active }">
@@ -50,23 +50,25 @@
             </li>
           </ul>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-lg-5 col-md-6 col-sm-12">
-          <h2>Users</h2>
-          <div class="userlist">
-            <div v-for="user in users" @click="(user.uuid === uuid) ? editUsername = true : null">
-              <input v-if="user.uuid === uuid && editUsername" v-model="username" v-on:keyup.enter="changeUsername" @blur="changeUsername" v-focus>
-              <span v-else>{{ user.username }}</span>
+        <div class="col-xl-3 col-lg-12 order-lg-3">
+          <div class="row">
+            <div class="col-xl-12 col-lg-5 col-md-6 col-sm-12">
+              <h2>Users</h2>
+              <div class="userlist">
+                <div v-for="user in users" @click="(user.uuid === uuid) ? editUsername = true : null">
+                  <input v-if="user.uuid === uuid && editUsername" v-model="username" v-on:keyup.enter="changeUsername" @blur="changeUsername" v-focus>
+                  <span v-else>{{ user.username }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-12 col-lg-7 col-md-6 col-sm-12">
+              <!-- Chat -->
             </div>
           </div>
         </div>
-        <div class="col-lg-7 col-md-6 col-sm-12">
-          <!-- Chat -->
-        </div>
-      </div>
 
+      </div>
     </div>
 
     <script>

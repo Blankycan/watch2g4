@@ -172,6 +172,8 @@ wsServer.on('request', function(request) {
       else if(data.type === "syncState") {
         sendState(data)
       }
+
+      // Handle video playback messages
       else if(data.type === "playback") {
         if(data.action === "play" || data.action === "pause") {
           console.log(`[${uuid}] Started changed the video playback`);

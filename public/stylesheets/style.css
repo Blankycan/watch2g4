@@ -82,19 +82,16 @@ a {
 #queue  li:hover{
   background-color: #363636;
 }
-  background-color: #616060;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
 
 .userlist {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 20px;
   font-size: 18px;
+}
+.userlist > div:first-child {
   background-color: #363636;
-  border: 1px solid #585858;
+  cursor: pointer;
+}
+.userlist > div:first-child:hover {
+  background-color: #585858;
 }
 .userlist > div > input {
   font-size: inherit;
@@ -104,7 +101,7 @@ a {
   padding-left: 5px;
 }
 .userlist > div {
-  color: #aaaaaa;
+  color: #ffffff;
   border: 1px solid #585858;
   line-height: 35px;
   margin: 5px 0;

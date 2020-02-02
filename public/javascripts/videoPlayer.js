@@ -51,6 +51,16 @@ var videoPlayer = {
           'onStateChange': this.onPlayerStateChange
         }
       });
+
+      url = "https://www.youtube.com/v/DcJFdCmN98s?version=3"
+      origVid = "https://www.youtube.com/watch?v=DcJFdCmN98s"
+      msg = {
+        type: 'queue',
+        url: url,
+        originalUrl: origVid,
+        active: true      
+      }
+      this.socket.send(JSON.stringify(msg));
     },
     /**
      * Callback when the Video player is ready after loading a video.
@@ -71,9 +81,12 @@ var videoPlayer = {
       // Video has Ended
       if(event.data == YT.PlayerState.ENDED) {
         console.log("ENDED");
-        if (this.queue.length > 0){
-          this.loadVideo(this.queue[0]['url'])
-          this.queue.shift()
+        if (this.currentIndex < this.queue.length - 1){
+          this.queue[this.currentIndex].active = false
+          this.currentIndex++
+          this.queue[this.currentIndex].active = true
+          Vue.set(this.queue, this.currentIndex, this.queue[this.currentIndex])
+          this.loadVideo(this.queue[this.currentIndex]['url'])
         }
       }
       // Video has started Playing

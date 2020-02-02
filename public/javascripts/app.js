@@ -3,7 +3,8 @@ var app = new Vue({
   mixins: [ webSocket, videoPlayer ],
   data: {
     videoSearch: "https://www.youtube.com/watch?v=DcJFdCmN98s",
-    queue: []
+    queue: [],
+    currentIndex: 0
   },
   methods: {
     /**
@@ -24,6 +25,15 @@ var app = new Vue({
       if(data.type === "search") {
         this.loadVideo(data.data);
       }
+      else if(data.type === "playQueuedVideo") {
+        console.log(`set ${this.currentIndex} to active false and ${data.queueIndex} to active`)
+        this.queue[this.currentIndex].active = false
+        this.currentIndex = data.queueIndex
+        this.queue[this.currentIndex].active = true
+        Vue.set(this.queue, this.currentIndex, this.queue[this.currentIndex])
+
+        this.loadVideo(this.queue[this.currentIndex]['url'])
+      }
 
       // Handle video queue event
       else if(data.type === "queue") {
@@ -35,6 +45,7 @@ var app = new Vue({
       else if(data.type === "syncQueue") {
         console.log("Syncing queue")
         this.queue = data.data
+        this.currentIndex = data.currentIndex
       }
 
       else if(data.type === "syncState") {
@@ -106,7 +117,8 @@ var app = new Vue({
       let msg = {
         type: 'queue',
         url: this.videoSearch,
-        originalUrl: originalUrl
+        originalUrl: originalUrl,
+        active: false
       }
       this.socket.send(JSON.stringify(msg));
       this.videoSearch = ""
@@ -115,22 +127,13 @@ var app = new Vue({
      * Sends an event to all users to add the video to their queue
      */
     playQueuedVideo: function(index) {
-      const vid = this.queue[index]
       // Pass this search query to the server
       let msg = {
-        type: 'search',
-        data: vid['url']
+        type: 'playQueuedVideo',
+        queueIndex: index
       }
       this.socket.send(JSON.stringify(msg));
       
-      this.queue.splice(index, 1)
-
-      msg = {
-        type: 'syncQueue',
-        data: this.queue
-      }
-      this.socket.send(JSON.stringify(msg));
-
     },
     /**
      * Sends an event to all users to add the video to their queue
@@ -139,7 +142,8 @@ var app = new Vue({
       msg = {
         type: 'syncState',
         receiver: receiver,
-        queue: this.queue
+        queue: this.queue,
+        currentIndex: this.currentIndex
       }
       this.socket.send(JSON.stringify(msg));
 
@@ -154,7 +158,7 @@ var app = new Vue({
       let msg = {
         type: 'queue',
         url: url,
-        originalUrl: origVid      
+        originalUrl: origVid
       }
       this.socket.send(JSON.stringify(msg));
   

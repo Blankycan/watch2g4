@@ -112,7 +112,7 @@ wsServer.on('request', function(request) {
           requestState(user)
         }
       }
-      else if(data.type === "search" || data.type === "syncQueue") {
+      else if(data.type === "search" || data.type === "syncQueue" || data.type === "playQueuedVideo") {
         broadcast(message.utf8Data);
       }
       else if(data.type === "queue") {

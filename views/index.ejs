@@ -22,7 +22,7 @@
       <div id="queue">
         <h2>Queue</h2>
         <ul>
-          <li v-for="(video, index) in queue" v-on:click="playQueuedVideo(index)">
+          <li v-for="(video, index) in queue" v-on:click="playQueuedVideo(index)" v-bind:class="{ active: video.active }">
             <p>{{video.title}}</p>
             <a :href="video.originalUrl">{{video.originalUrl}}</a>
           </li>

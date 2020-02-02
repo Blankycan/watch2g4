@@ -63,7 +63,7 @@ var videoPlayer = {
           originalUrl: origVid,
           active: true      
         }
-        this.socket.send(JSON.stringify(msg));
+        app.send(JSON.stringify(msg));
       }
     },
     /**
@@ -210,5 +210,12 @@ var videoPlayer = {
       this.playing = false;
       this.player.stopVideo();
     }
+  },
+  mounted() {
+    // Load the IFrame Player API code asynchronously
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   }
 }

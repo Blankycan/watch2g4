@@ -1,5 +1,9 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
+var request = require('request-promise-native')
+var JSSoup = require('jssoup').default
+var jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 var clients = [];
 
@@ -44,7 +48,31 @@ function broadcastUserlist() {
   broadcast(JSON.stringify(msg));
 }
 
+async function getVideoInfo(inMsg) {
+  console.log("Queue video")
+  let title;
+  // Do a request to youtube to get the title
+  var options = {
+    uri: inMsg.originalUrl
+  };
+  try{
+    const result = await request(options)
+    const soup = new JSSoup(result)
+    const tags = soup.find('meta', {'name': 'title'})
+    if (tags.attrs && tags.attrs.content){
+      title = tags.attrs.content
+      const parser = new JSDOM("<!doctype html><body>" + title)
+      title = parser.window.document.body.textContent
+      inMsg['title'] = title
+      console.log(title)
+    }
+  } catch(error) {
+    console.log("Failed to get info about video")
+    console.log(error)
+  }
 
+  broadcast(JSON.stringify(inMsg))
+}
 
 // WebSocket server
 wsServer.on('request', function(request) {
@@ -104,6 +132,9 @@ wsServer.on('request', function(request) {
 
       else if(data.type === "search") {
         broadcast(message.utf8Data);
+      }
+      else if(data.type === "queue") {
+        getVideoInfo(data);
       }
       else if(data.type === "playback") {
         if(data.action === "play" || data.action === "pause") {

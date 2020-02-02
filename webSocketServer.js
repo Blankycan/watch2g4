@@ -123,6 +123,10 @@ wsServer.on('request', function(request) {
     for(let i = 0; i < clients.length; ++i) {
       if(clients[i].uuid === uuid) {
         clients.splice(i, 1);
+
+        // Broadcast updated userlist
+        broadcastUserlist();
+
         break;
       }
     }

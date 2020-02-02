@@ -88,7 +88,7 @@ wsServer.on('request', function(request) {
       if(data.type === "connect") {
         console.log(`[${uuid}] New connection by ${data.data}`);
       }
-      else if(data.type === "search") {
+      else if(data.type === "search" || data.type === "syncQueue") {
         broadcast(message.utf8Data);
       }
       else if(data.type === "queue") {

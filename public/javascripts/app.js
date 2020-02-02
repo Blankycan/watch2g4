@@ -26,9 +26,15 @@ var app = new Vue({
       }
 
       // Handle video queue event
-      if(data.type === "queue") {
+      else if(data.type === "queue") {
         console.log("Queued a new video")
         this.queue.push(data)
+      }
+
+      // Handle sync queue
+      else if(data.type === "syncQueue") {
+        console.log("Syncing queue")
+        this.queue = data.data
       }
 
       // Handle a Playback event
@@ -107,8 +113,15 @@ var app = new Vue({
         data: vid['url']
       }
       this.socket.send(JSON.stringify(msg));
-      console.log(index)
+      
       this.queue.splice(index, 1)
+
+      msg = {
+        type: 'syncQueue',
+        data: this.queue
+      }
+      this.socket.send(JSON.stringify(msg));
+
     },
     /**
      * Sample function to load 2 videos to the queue

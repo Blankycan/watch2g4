@@ -72,7 +72,7 @@ var videoPlayer = {
             time: this.lastVideoTime,
             timestamp: this.lastTimestamp
           }
-          this.socket.send(JSON.stringify(msg));
+          app.send(JSON.stringify(msg));
           this.setupPlaySync();
         }
         this.playing = true;
@@ -87,7 +87,7 @@ var videoPlayer = {
             time: this.player.getCurrentTime(),
             timestamp: (new Date(this.timesync.now())).getTime()
           }
-          this.socket.send(JSON.stringify(msg));
+          app.send(JSON.stringify(msg));
         }
         this.playing = false;
       }
@@ -101,7 +101,7 @@ var videoPlayer = {
             time: this.player.getCurrentTime(),
             timestamp: (new Date(this.timesync.now())).getTime()
           }
-          this.socket.send(JSON.stringify(msg));
+          app.send(JSON.stringify(msg));
         }
       }
       // Video has been Cued

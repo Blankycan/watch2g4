@@ -1,10 +1,7 @@
-let webSocketServer = "wss://<insert.address.of.websocket.server>";
-
 var app = new Vue({
   el: '#app',
-  mixins: [ videoPlayer ],
+  mixins: [ webSocket, videoPlayer ],
   data: {
-    socket: null,
     timesync: null,
     videoSearch: "https://www.youtube.com/watch?v=S-8U4lSEq8A",
   },
@@ -18,19 +15,6 @@ var app = new Vue({
     this.timesync.on('change', function(offset) {
       console.log("Changed offset:", offset, "ms");
     });
-
-    // Setup the WebSocket towards our video server
-    this.socket = new WebSocket(webSocketServer);
-
-    this.socket.addEventListener('open', function(event) {
-      let msg = {
-        type: "connect",
-        data: "Username"
-      };
-      app.socket.send(JSON.stringify(msg));
-    });
-
-    this.socket.addEventListener('message', this.onMessage);
   },
   methods: {
     /**
@@ -38,6 +22,7 @@ var app = new Vue({
      */
     onMessage: function(inMessage) {
       console.log("onMessage:", inMessage);
+      // Parse the message data to a JSON object
       let data = {};
       try {
         data = JSON.parse(inMessage.data);
@@ -50,6 +35,7 @@ var app = new Vue({
       if(data.type === "search") {
         this.doSearch(data.data);
       }
+
       // Handle a Playback event
       else if(data.type === "playback") {
         this.lastVideoTime = data.time;

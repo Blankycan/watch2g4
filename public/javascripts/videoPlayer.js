@@ -6,9 +6,21 @@ var videoPlayer = {
       playing: false,
       lastVideoTime: 0,
       lastTimestamp: 0,
+      timesync: null,
       playSync: null,
       syncCount: 0
     }
+  },
+  created() {
+    // Setup the TimeSync
+    this.timesync = timesync.create({
+      server: '/timesync',
+      interval: 10000
+    });
+
+    this.timesync.on('change', function(offset) {
+      console.log("Changed offset:", offset, "ms");
+    });
   },
   methods: {
     /**

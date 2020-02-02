@@ -19,7 +19,7 @@ var webSocket = {
     });
 
     // Setup callback to handle all messages from the Web Socket
-    this.socket.addEventListener('message', app.onMessage);
+    this.socket.addEventListener('message', this.onMessage);
   },
   methods: {
     /**

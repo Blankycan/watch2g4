@@ -2,19 +2,7 @@ var app = new Vue({
   el: '#app',
   mixins: [ webSocket, videoPlayer ],
   data: {
-    timesync: null,
     videoSearch: "https://www.youtube.com/watch?v=S-8U4lSEq8A",
-  },
-  created() {
-    // Setup the TimeSync
-    this.timesync = timesync.create({
-      server: '/timesync',
-      interval: 10000
-    });
-
-    this.timesync.on('change', function(offset) {
-      console.log("Changed offset:", offset, "ms");
-    });
   },
   methods: {
     /**

@@ -40,11 +40,11 @@ var videoPlayer = {
      * the iframe and connect some events.
      */
     onYouTubeIFrameAPIReady: function() {
-      console.log("IN HERE");
+      console.log("Setup video player");
       this.player = new YT.Player('player', {
         height: '390',
         width: '640',
-        videoId: 'FQRsakvoe8w',
+        videoId: 'DcJFdCmN98s',
         playerVars: { 'autoplay': 0 },
         events: {
           'onReady': this.onPlayerReady,
@@ -71,6 +71,10 @@ var videoPlayer = {
       // Video has Ended
       if(event.data == YT.PlayerState.ENDED) {
         console.log("ENDED");
+        if (this.queue.length > 0){
+          this.loadVideo(this.queue[0]['url'])
+          this.queue.shift()
+        }
       }
       // Video has started Playing
       else if(event.data == YT.PlayerState.PLAYING) {
@@ -157,8 +161,8 @@ var videoPlayer = {
      * Load a YouTube video by url.
      * @param inUrl Url to load in the player.
      */
-    doSearch: function(inUrl) {
-      console.log("doSearch:", inUrl);
+    loadVideo: function(inUrl) {
+      console.log("loadVideo:", inUrl);
       this.player.loadVideoByUrl(inUrl, 0)
     },
     /**

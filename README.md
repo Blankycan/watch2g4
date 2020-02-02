@@ -1,6 +1,8 @@
 # watch2g4
 Watch YouTube videos together with your friends
 
+A simple web page made with Express, Node.js and Google's YouTube IFrame API https://developers.google.com/youtube/iframe_api_reference
+
 # Setup
 ## Install Node.js
 I recommend using **NVM** for being able to use different Node.js versions across different projects.

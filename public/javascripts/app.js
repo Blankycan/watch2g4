@@ -97,6 +97,20 @@ var app = new Vue({
       this.videoSearch = ""
     },
     /**
+     * Sends an event to all users to add the video to their queue
+     */
+    playQueuedVideo: function(index) {
+      const vid = this.queue[index]
+      // Pass this search query to the server
+      let msg = {
+        type: 'search',
+        data: vid['url']
+      }
+      this.socket.send(JSON.stringify(msg));
+      console.log(index)
+      this.queue.splice(index, 1)
+    },
+    /**
      * Sample function to load 2 videos to the queue
      */
     fillqueue: function() {
@@ -112,6 +126,16 @@ var app = new Vue({
   
       url = "https://www.youtube.com/v/G2e_M06YDyY?version=3"
       origVid = "https://www.youtube.com/watch?v=G2e_M06YDyY"
+      // Pass this search query to the server
+      msg = {
+        type: 'queue',
+        url: url,
+        originalUrl: origVid      
+      }
+      this.socket.send(JSON.stringify(msg));
+
+      url = "https://www.youtube.com/v/1bt-FHaFVH8?version=3"
+      origVid = "https://www.youtube.com/watch?v=1bt-FHaFVH8"
       // Pass this search query to the server
       msg = {
         type: 'queue',

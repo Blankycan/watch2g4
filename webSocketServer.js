@@ -34,6 +34,26 @@ function broadcast(inMsg, uuidSkip) {
   }
 }
 
+function requestState(user){
+  let msg = {
+    type: 'syncState',
+    receiver: user.uuid
+  }
+  clients[0].connection.send(JSON.stringify(msg))
+}
+
+
+function sendState(data) {
+  const receiver = data.receiver
+  data.type = 'stateUpdate'
+  for(let i = 0; i < clients.length; ++i) {
+    if(clients[i].uuid == receiver) {
+      clients[i].connection.send(JSON.stringify(data));
+    }
+  }
+}
+
+
 async function getVideoInfo(inMsg) {
   console.log("Queue video")
   let title;
@@ -87,12 +107,19 @@ wsServer.on('request', function(request) {
 
       if(data.type === "connect") {
         console.log(`[${uuid}] New connection by ${data.data}`);
+        if (clients.length > 1) {
+          // Ask another client for the current state
+          requestState(user)
+        }
       }
       else if(data.type === "search" || data.type === "syncQueue") {
         broadcast(message.utf8Data);
       }
       else if(data.type === "queue") {
         getVideoInfo(data);
+      }
+      else if(data.type === "syncState") {
+        sendState(data)
       }
       else if(data.type === "playback") {
         if(data.action === "play" || data.action === "pause") {

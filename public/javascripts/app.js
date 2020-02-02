@@ -37,6 +37,15 @@ var app = new Vue({
         this.queue = data.data
       }
 
+      else if(data.type === "syncState") {
+        console.log("New client asked for state")
+        this.sendState(data.receiver)
+      }
+
+      else if(data.type === "stateUpdate") {
+        console.log("Received stateUpdate")
+        this.queue = data.queue
+      }
       // Handle a Playback event
       else if(data.type === "playback") {
         this.lastVideoTime = data.time;
@@ -119,6 +128,18 @@ var app = new Vue({
       msg = {
         type: 'syncQueue',
         data: this.queue
+      }
+      this.socket.send(JSON.stringify(msg));
+
+    },
+    /**
+     * Sends an event to all users to add the video to their queue
+     */
+    sendState: function(receiver) {
+      msg = {
+        type: 'syncState',
+        receiver: receiver,
+        queue: this.queue
       }
       this.socket.send(JSON.stringify(msg));
 

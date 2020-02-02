@@ -7,6 +7,7 @@
     <!-- production version, optimized for size and speed -->
     <!--script src="https://cdn.jsdelivr.net/npm/vue"></script-->
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/timesync/timesync.js"></script>
   </head>
   <body>
@@ -19,6 +20,7 @@
       </div>
 
       <div id="player"></div>
+
       <div id="queue">
         <h2>Queue</h2>
         <ul>
@@ -28,8 +30,21 @@
           </li>
         </ul>
       </div>
+
+      <h2>Users</h2>
+      <div class="userlist">
+        <div v-for="user in users" @click="(user.uuid === uuid) ? editUsername = true : null">
+          <input v-if="user.uuid === uuid && editUsername" v-model="username" v-on:keyup.enter="changeUsername" @blur="changeUsername" v-focus>
+          <span v-else>{{ user.username }}</span>
+        </div>
+      </div>
+
     </div>
 
+    <script>
+      var username = "<%= username %>";
+      var uuid = "<%= uuid %>";
+    </script>
     <script src="/javascripts/webSocket.js"></script>
     <script src="/javascripts/videoPlayer.js"></script>
     <script src="/javascripts/app.js"></script>

@@ -18,7 +18,10 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(["much", "cool", "strings", "here"], {
+  expires: 60 * 60 * 24 * 9001, // Over 9000 days
+  maxAge: 60 * 60 * 24 * 9001
+}));
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),

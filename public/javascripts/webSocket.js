@@ -10,10 +10,11 @@ var webSocket = {
     // Setup the WebSocket towards our video server
     this.socket = new WebSocket(webSocketServer);
 
-    this.socket.addEventListener('open', function(event) {
+    this.socket.addEventListener('open', (event) => {
       let msg = {
         type: "connect",
-        data: "Username"
+        username: this.username,
+        uuid: this.uuid
       };
       app.socket.send(JSON.stringify(msg));
     });

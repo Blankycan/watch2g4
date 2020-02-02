@@ -2,9 +2,13 @@ var app = new Vue({
   el: '#app',
   mixins: [ webSocket, videoPlayer ],
   data: {
+    username: username,
+    uuid: uuid,
     videoSearch: "https://www.youtube.com/watch?v=DcJFdCmN98s",
     queue: [],
-    currentIndex: 0
+    currentIndex: 0,
+    users: [],
+    editUsername: false
   },
   methods: {
     /**
@@ -21,8 +25,31 @@ var app = new Vue({
         console.log("Failed to parse message.");
       }
 
+      // Receive inital userdata for yourself
+      if(data.type === "userdata") {
+        console.log("userdata:", data.data);
+        // Update UUID if we got a new one
+        if(this.uuid != data.data.uuid) {
+          this.uuid = data.data.uuid;
+          $.post('/setUuid', {
+            uuid: this.uuid
+          }, (data, status) => {
+            console.log(`${data} and status is ${status}`);
+          });
+        }
+      }
+
+      // Handle updated userlist
+      else if(data.type === "userlist") {
+        console.log("userlist:", data.users);
+        // Sort users so you are first
+        this.users = data.users.sort((a, b) => {
+          return (a.uuid === this.uuid) ? -1 : (b.uuid === this.uuid) ? 1 : 0;
+        });
+      }
+
       // Handle video search event
-      if(data.type === "search") {
+      else if(data.type === "search") {
         this.loadVideo(data.data);
       }
       else if(data.type === "playQueuedVideo") {
@@ -195,6 +222,33 @@ var app = new Vue({
         originalUrl: origVid      
       }
       this.socket.send(JSON.stringify(msg));
+    },
+    /**
+     * Update the username.
+     */
+    changeUsername: function() {
+      this.editUsername = false;
+
+      // Make sure that the username differs
+      if(this.username !== this.users[0].username) {
+        this.send(JSON.stringify({
+          type: "rename",
+          username: this.username,
+          uuid: this.uuid
+        }));
+        $.post('/setUsername', {
+          username: this.username
+        }, (data, status) => {
+          console.log(`${data} and status is ${status}`);
+        });
+      }
+    }
+  },
+  directives: {
+    focus: {
+      inserted(el) {
+        el.focus();
+      }
     }
   }
 });

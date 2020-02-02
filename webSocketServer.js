@@ -54,6 +54,20 @@ function sendState(data) {
 }
 
 
+function broadcastUserlist() {
+  let msg = {
+    type: "userlist",
+    users: []
+  };
+  for(let i = 0; i < clients.length; ++i) {
+    msg.users.push({
+      username: clients[i].username,
+      uuid: clients[i].uuid
+    });
+  }
+  broadcast(JSON.stringify(msg));
+}
+
 async function getVideoInfo(inMsg) {
   console.log("Queue video")
   let title;
@@ -105,13 +119,43 @@ wsServer.on('request', function(request) {
         console.log("Failed to parse message:", message);
       }
 
+      // Handle initial connect message, where the client sends his username and get his UUID in return 
       if(data.type === "connect") {
         console.log(`[${uuid}] New connection by ${data.data}`);
         if (clients.length > 1) {
           // Ask another client for the current state
           requestState(user)
         }
+        
+        user.username = data.username;
+        // Update the uuid we use if client supplied one
+        if(data.uuid) {
+          console.log(`Changed uuid from: ${uuid} to: ${data.uuid}`);
+          uuid = data.uuid;
+          user.uuid = uuid;
+        }
+        console.log(`[${uuid}] New connection by '${data.username}'`);
+
+        // Send client its userdata with uuid
+        connection.send(JSON.stringify({
+          type: "userdata",
+          data: {
+            uuid: uuid
+          }
+        }));
+
+        // Broadcast updated userlist
+        broadcastUserlist();
       }
+
+      // Rename user
+      else if(data.type === "rename") {
+        if(uuid === data.uuid) {
+          user.username = data.username;
+          broadcastUserlist();
+        }
+      }
+
       else if(data.type === "search" || data.type === "syncQueue" || data.type === "playQueuedVideo") {
         broadcast(message.utf8Data);
       }
@@ -139,6 +183,10 @@ wsServer.on('request', function(request) {
     for(let i = 0; i < clients.length; ++i) {
       if(clients[i].uuid === uuid) {
         clients.splice(i, 1);
+
+        // Broadcast updated userlist
+        broadcastUserlist();
+
         break;
       }
     }

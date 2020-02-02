@@ -91,7 +91,15 @@ async function getVideoInfo(inMsg) {
     console.log(error)
   }
 
-  broadcast(JSON.stringify(inMsg))
+  if (inMsg.user) {
+    for(let i = 0; i < clients.length; ++i) {
+      if(clients[i].uuid == inMsg.user) {
+        clients[i].connection.send(JSON.stringify(inMsg));
+      }
+    }  
+  } else{
+    broadcast(JSON.stringify(inMsg))
+  }
 }
 
 // WebSocket server
@@ -122,10 +130,6 @@ wsServer.on('request', function(request) {
       // Handle initial connect message, where the client sends his username and get his UUID in return 
       if(data.type === "connect") {
         console.log(`[${uuid}] New connection by ${data.data}`);
-        if (clients.length > 1) {
-          // Ask another client for the current state
-          requestState(user)
-        }
         
         user.username = data.username;
         // Update the uuid we use if client supplied one
@@ -146,6 +150,11 @@ wsServer.on('request', function(request) {
 
         // Broadcast updated userlist
         broadcastUserlist();
+        
+        if (clients.length > 1) {
+          // Ask another client for the current state
+          requestState(user)
+        }
       }
 
       // Rename user

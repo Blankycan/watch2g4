@@ -52,15 +52,19 @@ var videoPlayer = {
         }
       });
 
-      url = "https://www.youtube.com/v/DcJFdCmN98s?version=3"
-      origVid = "https://www.youtube.com/watch?v=DcJFdCmN98s"
-      msg = {
-        type: 'queue',
-        url: url,
-        originalUrl: origVid,
-        active: true      
+      if (this.queue.length == 0) {
+        url = "https://www.youtube.com/v/DcJFdCmN98s?version=3"
+        origVid = "https://www.youtube.com/watch?v=DcJFdCmN98s"
+        msg = {
+          type: 'queue',
+          initial: true,
+          user: uuid,
+          url: url,
+          originalUrl: origVid,
+          active: true      
+        }
+        this.socket.send(JSON.stringify(msg));
       }
-      this.socket.send(JSON.stringify(msg));
     },
     /**
      * Callback when the Video player is ready after loading a video.

@@ -65,7 +65,11 @@ var app = new Vue({
       // Handle video queue event
       else if(data.type === "queue") {
         console.log("Queued a new video")
-        this.queue.push(data)
+        if (data.initial && this.queue.length === 0) {
+          this.queue.push(data)
+        } else if(data.initial === undefined){
+          this.queue.push(data)
+        }
       }
 
       // Handle sync queue
@@ -84,6 +88,10 @@ var app = new Vue({
       else if(data.type === "stateUpdate") {
         console.log("Received stateUpdate")
         this.queue = data.queue
+        this.currentIndex = data.currentIndex
+        if (data.currentIndex !== 0){
+          this.queue[0].active = false
+        }
       }
       // Handle a Playback event
       else if(data.type === "playback") {
@@ -168,6 +176,7 @@ var app = new Vue({
      */
     removeQueuedVideo: function(index) {
       // Pass this search query to the server
+      this.currentIndex -= index < this.currentIndex ? 1 : 0
       this.queue.splice(index, 1)
       let msg = {
         type: 'syncQueue',

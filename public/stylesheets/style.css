@@ -82,10 +82,6 @@ a {
 #queue  li:hover{
   background-color: #363636;
 }
-  background-color: #616060;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
 
 .userlist {
   display: flex;

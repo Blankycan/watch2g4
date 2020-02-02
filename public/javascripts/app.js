@@ -74,12 +74,13 @@ var app = new Vue({
         this.queue = data.queue
         this.currentIndex = data.currentIndex
       }
-
+      
+      // This is received when a new client asks for the current state
       else if(data.type === "syncState") {
         console.log("New client asked for state")
         this.sendState(data.receiver)
       }
-
+      // This is received on the new client after an old one sends syncState
       else if(data.type === "stateUpdate") {
         console.log("Received stateUpdate")
         this.queue = data.queue

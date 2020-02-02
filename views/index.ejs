@@ -13,10 +13,21 @@
     <div id="app">
       <div class="search">
         <input v-model="videoSearch" v-on:keyup.enter="searchVideo"></input>
-        <button v-on:click="searchVideo">Search</button>
+        <button v-on:click="searchVideo">Play now</button>
+        <button v-on:click="queueVideo">Add to queue</button>
+        <button v-on:click="fillqueue">Sample queue</button>
       </div>
 
       <div id="player"></div>
+      <div id="queue">
+        <h2>Queue</h2>
+        <ul>
+          <li v-for="video in queue">
+            <p>{{video.title}}</p>
+            <a :href="video.originalUrl">{{video.originalUrl}}</a>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <script src="/javascripts/webSocket.js"></script>

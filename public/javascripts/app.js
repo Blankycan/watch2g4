@@ -2,7 +2,8 @@ var app = new Vue({
   el: '#app',
   mixins: [ webSocket, videoPlayer ],
   data: {
-    videoSearch: "https://www.youtube.com/watch?v=S-8U4lSEq8A",
+    videoSearch: "https://www.youtube.com/watch?v=DcJFdCmN98s",
+    queue: []
   },
   methods: {
     /**
@@ -21,7 +22,13 @@ var app = new Vue({
 
       // Handle video search event
       if(data.type === "search") {
-        this.doSearch(data.data);
+        this.loadVideo(data.data);
+      }
+
+      // Handle video queue event
+      if(data.type === "queue") {
+        console.log("Queued a new video")
+        this.queue.push(data)
       }
 
       // Handle a Playback event
@@ -46,7 +53,7 @@ var app = new Vue({
      * with the YouTube Player API.
      * Needs to be in format: http://www.youtube.com/v/VIDEO_ID?version=3
      */
-    searchVideo: function() {
+    processYTUrl: function() {
       let search = this.videoSearch;
       if(search.includes('/watch?v=')) {
         search = search.replace('/watch?v=', '/v/');
@@ -56,13 +63,63 @@ var app = new Vue({
         search = search.split('&')[0];
         search += "?version=3";
       }
+      console.log(search)
+      this.videoSearch = search
+    },
+    /**
+     * No docs
+     */
+    searchVideo: function() {
+      this.processYTUrl()
 
       // Pass this search query to the server
       let msg = {
         type: 'search',
-        data: search
+        data: this.videoSearch
+      }
+      this.socket.send(JSON.stringify(msg));
+      this.videoSearch = ""
+    },
+    /**
+     * No docs
+     */
+    queueVideo: function() {
+      const originalUrl = this.videoSearch
+      this.processYTUrl()
+
+      // Pass this search query to the server
+      let msg = {
+        type: 'queue',
+        url: this.videoSearch,
+        originalUrl: originalUrl
+      }
+      this.socket.send(JSON.stringify(msg));
+      this.videoSearch = ""
+    },
+    /**
+     * No docs
+     */
+    fillqueue: function() {
+      let url = "https://www.youtube.com/v/RMvt13PtV5I?version=3"
+      let origVid = "https://www.youtube.com/watch?v=RMvt13PtV5I"
+      // Pass this search query to the server
+      let msg = {
+        type: 'queue',
+        url: url,
+        originalUrl: origVid      
+      }
+      this.socket.send(JSON.stringify(msg));
+  
+      url = "https://www.youtube.com/v/G2e_M06YDyY?version=3"
+      origVid = "https://www.youtube.com/watch?v=G2e_M06YDyY"
+      // Pass this search query to the server
+      msg = {
+        type: 'queue',
+        url: url,
+        originalUrl: origVid      
       }
       this.socket.send(JSON.stringify(msg));
     }
   }
 });
+

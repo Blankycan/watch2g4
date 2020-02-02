@@ -33,5 +33,5 @@ $ npm start
 ```
 ## Web Socket sever
 ```
-$ npm run startws
+$ npm run ws
 ```

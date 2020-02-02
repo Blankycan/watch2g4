@@ -2,6 +2,7 @@ var app = new Vue({
   el: '#app',
   mixins: [ webSocket, videoPlayer ],
   data: {
+    username: username,
     videoSearch: "https://www.youtube.com/watch?v=S-8U4lSEq8A",
   },
   methods: {
@@ -63,6 +64,16 @@ var app = new Vue({
         data: search
       }
       this.socket.send(JSON.stringify(msg));
+    },
+    /**
+     * Update the username.
+     */
+    changeUsername: function() {
+      $.post('/setUsername', {
+        username: this.username
+      }, (data, status) => {
+        console.log(`${data} and status is ${status}`);
+      });
     }
   }
 });

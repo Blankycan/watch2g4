@@ -13,7 +13,7 @@ var webSocket = {
     this.socket.addEventListener('open', function(event) {
       let msg = {
         type: "connect",
-        data: "Username"
+        data: this.username
       };
       app.socket.send(JSON.stringify(msg));
     });

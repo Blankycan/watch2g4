@@ -7,6 +7,7 @@
     <!-- production version, optimized for size and speed -->
     <!--script src="https://cdn.jsdelivr.net/npm/vue"></script-->
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/timesync/timesync.js"></script>
   </head>
   <body>
@@ -17,8 +18,15 @@
       </div>
 
       <div id="player"></div>
+
+      <div class="userlist">
+        <input v-model="username" v-on:keyup.enter="changeUsername"></input>
+      </div>
     </div>
 
+    <script>
+      var username = "<%= username %>";
+    </script>
     <script src="/javascripts/webSocket.js"></script>
     <script src="/javascripts/videoPlayer.js"></script>
     <script src="/javascripts/app.js"></script>

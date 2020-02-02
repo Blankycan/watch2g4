@@ -37,3 +37,16 @@ a {
   margin: 10px auto;
   max-width: 100%;
 }
+
+.userlist {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  font-size: 18px;
+}
+
+.userlist > input {
+  padding: 5px;
+  padding-left: 0;
+  font-size: inherit;
+}

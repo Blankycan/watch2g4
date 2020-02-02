@@ -39,7 +39,10 @@ var app = new Vue({
       // Handle updated userlist
       else if(data.type === "userlist") {
         console.log("userlist:", data.users);
-        this.users = data.users;
+        // Sort users so you are first
+        this.users = data.users.sort((a, b) => {
+          return (a.uuid === this.uuid) ? -1 : (b.uuid === this.uuid) ? 1 : 0;
+        });
       }
 
       // Handle video search event

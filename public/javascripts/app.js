@@ -5,7 +5,8 @@ var app = new Vue({
     username: username,
     uuid: uuid,
     videoSearch: "https://www.youtube.com/watch?v=S-8U4lSEq8A",
-    users: []
+    users: [],
+    editUsername: false
   },
   methods: {
     /**
@@ -94,16 +95,28 @@ var app = new Vue({
      * Update the username.
      */
     changeUsername: function() {
-      this.send(JSON.stringify({
-        type: "rename",
-        username: this.username,
-        uuid: this.uuid
-      }));
-      $.post('/setUsername', {
-        username: this.username
-      }, (data, status) => {
-        console.log(`${data} and status is ${status}`);
-      });
+      this.editUsername = false;
+
+      // Make sure that the username differs
+      if(this.username !== this.users[0].username) {
+        this.send(JSON.stringify({
+          type: "rename",
+          username: this.username,
+          uuid: this.uuid
+        }));
+        $.post('/setUsername', {
+          username: this.username
+        }, (data, status) => {
+          console.log(`${data} and status is ${status}`);
+        });
+      }
+    }
+  },
+  directives: {
+    focus: {
+      inserted(el) {
+        el.focus();
+      }
     }
   }
 });

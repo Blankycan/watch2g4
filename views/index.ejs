@@ -20,9 +20,9 @@
       <div id="player"></div>
 
       <div class="userlist">
-        <input v-model="username" v-on:keyup.enter="changeUsername"></input>
         <div v-for="user in users">
-          <span>{{ user.username }}</span>
+          <input v-if="user.uuid === uuid && editUsername" v-model="username" v-on:keyup.enter="changeUsername" @blur="changeUsername" v-focus>
+          <span v-else @click="(user.uuid === uuid) ? editUsername = true : null">{{ user.username }}</span>
         </div>
       </div>
     </div>

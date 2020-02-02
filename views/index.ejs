@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- production version, optimized for size and speed -->
+    <!--script src="https://cdn.jsdelivr.net/npm/vue"></script-->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="/timesync/timesync.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="search">
+        <input v-model="videoSearch" v-on:keyup.enter="searchVideo"></input>
+        <button v-on:click="searchVideo">Search</button>
+      </div>
+
+      <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+      <div id="player"></div>
+    </div>
+
+    <script src="/javascripts/app.js"></script>
+    <script>
+      function onYouTubeIframeAPIReady() {
+        app.onYouTubeIFrameAPIReady();
+      }
+    </script>
+  </body>
+</html>

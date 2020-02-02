@@ -7,6 +7,7 @@
     <!-- production version, optimized for size and speed -->
     <!--script src="https://cdn.jsdelivr.net/npm/vue"></script-->
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://kit.fontawesome.com/9f40f7c35f.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="/timesync/timesync.js"></script>
   </head>
@@ -24,9 +25,10 @@
       <div id="queue">
         <h2>Queue</h2>
         <ul>
-          <li v-for="video in queue">
+          <li v-for="(video, index) in queue" v-on:click="playQueuedVideo(index)" v-bind:class="{ active: video.active }">
             <p>{{video.title}}</p>
             <a :href="video.originalUrl">{{video.originalUrl}}</a>
+            <i v-on:click="removeQueuedVideo(index)" class="fas fa-trash"></i>
           </li>
         </ul>
       </div>

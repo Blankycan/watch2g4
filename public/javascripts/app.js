@@ -6,6 +6,7 @@ var app = new Vue({
     uuid: uuid,
     videoSearch: "https://www.youtube.com/watch?v=DcJFdCmN98s",
     queue: [],
+    currentIndex: 0,
     users: [],
     editUsername: false
   },
@@ -51,6 +52,15 @@ var app = new Vue({
       else if(data.type === "search") {
         this.loadVideo(data.data);
       }
+      else if(data.type === "playQueuedVideo") {
+        console.log(`set ${this.currentIndex} to active false and ${data.queueIndex} to active`)
+        this.queue[this.currentIndex].active = false
+        this.currentIndex = data.queueIndex
+        this.queue[this.currentIndex].active = true
+        Vue.set(this.queue, this.currentIndex, this.queue[this.currentIndex])
+
+        this.loadVideo(this.queue[this.currentIndex]['url'])
+      }
 
       // Handle video queue event
       else if(data.type === "queue") {
@@ -58,6 +68,23 @@ var app = new Vue({
         this.queue.push(data)
       }
 
+      // Handle sync queue
+      else if(data.type === "syncQueue") {
+        console.log("Syncing queue")
+        this.queue = data.queue
+        this.currentIndex = data.currentIndex
+      }
+      
+      // This is received when a new client asks for the current state
+      else if(data.type === "syncState") {
+        console.log("New client asked for state")
+        this.sendState(data.receiver)
+      }
+      // This is received on the new client after an old one sends syncState
+      else if(data.type === "stateUpdate") {
+        console.log("Received stateUpdate")
+        this.queue = data.queue
+      }
       // Handle a Playback event
       else if(data.type === "playback") {
         this.lastVideoTime = data.time;
@@ -94,7 +121,7 @@ var app = new Vue({
       this.videoSearch = search
     },
     /**
-     * No docs
+     * Sends an event to all users to load the video specified in the searchbox
      */
     searchVideo: function() {
       this.processYTUrl()
@@ -108,7 +135,7 @@ var app = new Vue({
       this.videoSearch = ""
     },
     /**
-     * No docs
+     * Sends an event to all users to add the video to their queue
      */
     queueVideo: function() {
       const originalUrl = this.videoSearch
@@ -118,13 +145,53 @@ var app = new Vue({
       let msg = {
         type: 'queue',
         url: this.videoSearch,
-        originalUrl: originalUrl
+        originalUrl: originalUrl,
+        active: false
       }
       this.socket.send(JSON.stringify(msg));
       this.videoSearch = ""
     },
     /**
-     * No docs
+     * Sends an event to all users to add the video to their queue
+     */
+    playQueuedVideo: function(index) {
+      // Pass this search query to the server
+      let msg = {
+        type: 'playQueuedVideo',
+        queueIndex: index
+      }
+      this.socket.send(JSON.stringify(msg));
+      
+    },
+    /**
+     * Sends an event to all users to add the video to their queue
+     */
+    removeQueuedVideo: function(index) {
+      // Pass this search query to the server
+      this.queue.splice(index, 1)
+      let msg = {
+        type: 'syncQueue',
+        queue: this.queue,
+        currentIndex: this.currentIndex
+      }
+      this.socket.send(JSON.stringify(msg));
+      
+    },
+    /**
+     * Sends an event to all users to add the video to their queue
+     */
+    sendState: function(receiver) {
+      msg = {
+        type: 'syncState',
+        receiver: receiver,
+        queue: this.queue,
+        currentIndex: this.currentIndex
+      }
+      this.socket.send(JSON.stringify(msg));
+
+    },
+    /**
+     * Sample function to load 2 videos to the queue
      */
     fillqueue: function() {
       let url = "https://www.youtube.com/v/RMvt13PtV5I?version=3"
@@ -133,12 +200,22 @@ var app = new Vue({
       let msg = {
         type: 'queue',
         url: url,
-        originalUrl: origVid      
+        originalUrl: origVid
       }
       this.socket.send(JSON.stringify(msg));
   
       url = "https://www.youtube.com/v/G2e_M06YDyY?version=3"
       origVid = "https://www.youtube.com/watch?v=G2e_M06YDyY"
+      // Pass this search query to the server
+      msg = {
+        type: 'queue',
+        url: url,
+        originalUrl: origVid      
+      }
+      this.socket.send(JSON.stringify(msg));
+
+      url = "https://www.youtube.com/v/1bt-FHaFVH8?version=3"
+      origVid = "https://www.youtube.com/watch?v=1bt-FHaFVH8"
       // Pass this search query to the server
       msg = {
         type: 'queue',

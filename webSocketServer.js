@@ -34,6 +34,26 @@ function broadcast(inMsg, uuidSkip) {
   }
 }
 
+function requestState(user){
+  let msg = {
+    type: 'syncState',
+    receiver: user.uuid
+  }
+  clients[0].connection.send(JSON.stringify(msg))
+}
+
+
+function sendState(data) {
+  const receiver = data.receiver
+  data.type = 'stateUpdate'
+  for(let i = 0; i < clients.length; ++i) {
+    if(clients[i].uuid == receiver) {
+      clients[i].connection.send(JSON.stringify(data));
+    }
+  }
+}
+
+
 function broadcastUserlist() {
   let msg = {
     type: "userlist",
@@ -101,6 +121,12 @@ wsServer.on('request', function(request) {
 
       // Handle initial connect message, where the client sends his username and get his UUID in return 
       if(data.type === "connect") {
+        console.log(`[${uuid}] New connection by ${data.data}`);
+        if (clients.length > 1) {
+          // Ask another client for the current state
+          requestState(user)
+        }
+        
         user.username = data.username;
         // Update the uuid we use if client supplied one
         if(data.uuid) {
@@ -130,11 +156,14 @@ wsServer.on('request', function(request) {
         }
       }
 
-      else if(data.type === "search") {
+      else if(data.type === "search" || data.type === "syncQueue" || data.type === "playQueuedVideo") {
         broadcast(message.utf8Data);
       }
       else if(data.type === "queue") {
         getVideoInfo(data);
+      }
+      else if(data.type === "syncState") {
+        sendState(data)
       }
       else if(data.type === "playback") {
         if(data.action === "play" || data.action === "pause") {

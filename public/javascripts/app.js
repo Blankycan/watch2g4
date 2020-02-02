@@ -69,22 +69,28 @@ var app = new Vue({
       this.lastTimestamp = now;
       return this.lastVideoTime;
     },
+    /**
+     * Do a very crude modification to given YouTube links to make them work
+     * with the YouTube Player API.
+     * Needs to be in format: http://www.youtube.com/v/VIDEO_ID?version=3
+     */
     searchVideo: function() {
       let search = this.videoSearch;
       if(search.includes('/watch?v=')) {
         search = search.replace('/watch?v=', '/v/');
       }
       if(!search.includes('version=3')) {
-        search += (search.includes('?')) ? '&' : '?';
-        search += "version=3";
+        // Remove trailing trash and append the '?version=3'
+        search = search.split('&')[0];
+        search += "?version=3";
       }
 
+      // Pass this search query to the server
       let msg = {
         type: 'search',
         data: search
       }
       this.socket.send(JSON.stringify(msg));
-
     },
     // 3. This function creates an <iframe> (and YouTube player)
     //    after the API code downloads.
